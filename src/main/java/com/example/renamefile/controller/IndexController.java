@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 @RestController
 public class IndexController {
@@ -26,6 +27,9 @@ public class IndexController {
         List list = new ArrayList();
         for (File file : files) {
             try {
+                if (file.getName().equals(".DS_Store")) {
+                    continue;
+                }
                 Metadata metadata = null;
                 try {
                     metadata = ImageMetadataReader.readMetadata(file);
@@ -53,9 +57,14 @@ public class IndexController {
                         break;
                 }
                 if (date != null) {
-                    String format = DateFormatUtils.format(date, "yyyy-MM-dd hh_mm_ss").concat(suffix);
+                    String format = DateFormatUtils.format(date, "yyyy-MM-dd hhmmss").concat(suffix);
                     boolean b = file.renameTo(new File(dirPath.concat("\\").concat(format)));
                     String info = String.format("重命名：%s ==> %s %s", name, format, b);
+                    if (!b) {
+                        format = format.concat("01");
+                        b = file.renameTo(new File(dirPath.concat("\\").concat(format)));
+                        info = String.format("重命名1：%s ==> %s %s", name, format, b);
+                    }
                     list.add(info);
                 }
             } catch (Exception e) {
@@ -65,5 +74,4 @@ public class IndexController {
         }
         return list;
     }
-
 }
