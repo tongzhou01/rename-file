@@ -24,7 +24,7 @@ public class IndexController {
 //        String dirPath = "E:\\宝宝照片\\202301";
         File dir = new File(dirPath);
         File[] files = dir.listFiles();
-        List list = new ArrayList();
+        List<String> list = new ArrayList();
         for (File file : files) {
             try {
                 if (file.getName().equals(".DS_Store")) {
@@ -57,15 +57,16 @@ public class IndexController {
                         break;
                 }
                 if (date != null) {
-                    String format = DateFormatUtils.format(date, "yyyy-MM-dd hhmmss").concat(suffix);
-                    boolean b = file.renameTo(new File(dirPath.concat("\\").concat(format)));
+                    String format = DateFormatUtils.format(date, "yyyy-MM-dd hhmmss");
+                    boolean b = file.renameTo(new File(dirPath.concat("\\").concat(format.concat(suffix))));
                     String info = String.format("重命名：%s ==> %s %s", name, format, b);
+                    list.add(info);
                     if (!b) {
                         format = format.concat("01");
-                        b = file.renameTo(new File(dirPath.concat("\\").concat(format)));
+                        b = file.renameTo(new File(dirPath.concat("\\").concat(format.concat(suffix))));
                         info = String.format("重命名1：%s ==> %s %s", name, format, b);
+                        list.add(info);
                     }
-                    list.add(info);
                 }
             } catch (Exception e) {
                 continue;
